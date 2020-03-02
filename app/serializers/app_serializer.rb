@@ -24,7 +24,7 @@ class AppSerializer
 
     hash = {}
     hash[get_key.pluralize] = collection
-    hash['pagination'] = pagination_hash(object) if options[:paginate]
+    hash["pagination"] = pagination_hash(object) if options[:paginate]
     hash
   end
 

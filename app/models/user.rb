@@ -2,6 +2,7 @@
 
 class User
   include Mongoid::Document
+  include Mongoid::Timestamps::Created
   include ActiveModel::Validations
 
   attr_accessor :password
@@ -14,10 +15,10 @@ class User
   has_many :games, order: :created_at.desc,
                           validate: false
 
-  validates :name, :username, :password, presence: true
+  validates :name, :username, presence: true
   validates :username, uniqueness: true, length: { minimum: 3 }
   validates :name, length: { minimum: 2 }
-  validates :password, length: { minimum: 6 }
+  validates :password, presence: true, length: { minimum: 6 }, on: :create
 
   before_create :set_crypted_password
   before_create :set_jwt_token

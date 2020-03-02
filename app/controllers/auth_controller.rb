@@ -15,12 +15,12 @@ class AuthController < AppController
   private
 
   def validate_login!(user)
-    halt(401, error: "User doesn't exist") unless user
+    halt 401, error: "User doesn't exist" unless user
 
     user_password = BCrypt::Password.new(user.crypted_password)
 
     unless user_password == params.password
-      halt(401, error: "Password doesn't match")
+      halt 401, error: "Password doesn't match"
     end
   end
 end

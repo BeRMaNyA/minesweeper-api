@@ -3,9 +3,10 @@ ruby "2.7.0"
 
 gem "fit_api", path: "~/new/fit-api/"
 
-gem "mongoid", "~> 7.0.5"
-gem "bcrypt",  "~> 3.1.13"
-gem "jwt",     "~> 2.2.1"
+gem "mongoid",          "~> 7.0.5"
+gem "kaminari-mongoid", "~> 1.0.1"
+gem "bcrypt",           "~> 3.1.13"
+gem "jwt",              "~> 2.2.1"
 
 group :development do
   gem "pry"

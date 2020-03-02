@@ -2,17 +2,21 @@
 
 class Game
   include Mongoid::Document
+  include Mongoid::Timestamps::Created
   include ActiveModel::Validations
 
-  field :name,     type: String
-  field :state,    type: Symbol
-  field :settings, type: Hash
+  field :name,  type: String
+  field :state, type: Symbol
+  field :rows,  type: Integer
+  field :cols,  type: Integer
+  field :mines, type: Integer
 
-  belongs_to  :user, index: true
-  has_one     :board
+  belongs_to :user, index: true
+  has_one    :board, dependent: :destroy
+
   embeds_many :time_entries
 
-  validates :name, :user, :state, :settings, presence: true
+  validates :name, :user, :state, :rows, :cols, :mines, presence: true
 
   def total_duration
     time_entries.sum &:duration

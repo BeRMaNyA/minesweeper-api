@@ -3,8 +3,8 @@
 class Board
   include Mongoid::Document
 
-  field :mines,           type: Array
-  field :total_uncovered, type: Integer
+  field :mines,     type: Array
+  field :uncovered, type: Integer
 
   belongs_to  :game, index: true
   embeds_many :cells

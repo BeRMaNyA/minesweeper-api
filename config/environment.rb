@@ -10,4 +10,4 @@ require_relative "db"
 require_relative "routes"
 
 Dir.glob('./lib/**/*.rb', &method(:require))
-Dir.glob('./app/{models,serializers,services}/**/*.rb', &method(:require))
+Dir.glob('./app/{models,serializers,services}/**/*.rb').sort.each &method(:require)
