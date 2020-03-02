@@ -5,11 +5,9 @@ class UsersController < AppController
     user = User.new(user_params)
 
     if user.save 
-      serialized_user = UserSerializer.new(user)
-
-      json(201, serialized_user)
+      json 201, user
     else
-      json(422, errors: user.errors.to_h)
+      json 422, errors: user.errors.to_h
     end
   end
 

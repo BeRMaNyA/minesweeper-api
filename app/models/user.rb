@@ -19,8 +19,8 @@ class User
   validates :name, length: { minimum: 2 }
   validates :password, length: { minimum: 6 }
 
-  before_save :set_crypted_password
-  before_save :set_jwt_token
+  before_create :set_crypted_password
+  before_create :set_jwt_token
 
   index(username: 1, token: 1)
 

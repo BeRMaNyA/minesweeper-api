@@ -9,7 +9,7 @@ class AuthController < AppController
     user.set_jwt_token
     user.save
 
-    json(token: user.token)
+    json token: user.token
   end
 
   private
