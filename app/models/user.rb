@@ -20,4 +20,12 @@ class User
   validates :password, length: { minimum: 6 }
 
   index(username: 1, token: 1)
+
+  def set_crypted_password
+    self.crypted_password = BCrypt::Password.create(password)
+  end
+
+  def set_jwt_token
+    self.token = JWTAuth.generate_token(self)
+  end
 end

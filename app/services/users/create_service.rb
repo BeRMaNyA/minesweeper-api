@@ -9,7 +9,7 @@ module Users
     end
 
     def execute
-      inject_attrs
+      user.set_crypted_password
       user.save
       user
     end
@@ -17,7 +17,6 @@ module Users
     private
 
     def inject_attrs
-      user.crypted_password = BCrypt::Password.create(user.password)
       user.token = JWTAuth.generate_token(user)
     end
   end

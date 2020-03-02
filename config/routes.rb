@@ -6,4 +6,5 @@ FitApi::Router.define do
   root to: "app#root"
 
   resources :users, only: [:create]
+  post :login, to: "auth#login"
 end
