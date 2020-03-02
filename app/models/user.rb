@@ -14,10 +14,13 @@ class User
   has_many :games, order: :created_at.desc,
                           validate: false
 
-  validates :name, :username, :password, :token, presence: true
+  validates :name, :username, :password, presence: true
   validates :username, uniqueness: true, length: { minimum: 3 }
   validates :name, length: { minimum: 2 }
   validates :password, length: { minimum: 6 }
+
+  before_save :set_crypted_password
+  before_save :set_jwt_token
 
   index(username: 1, token: 1)
 

@@ -2,10 +2,9 @@
 
 class UsersController < AppController
   def create
-    service = Users::CreateService.new(user_params)
-    user    = service.execute
+    user = User.new(user_params)
 
-    if user.persisted?
+    if user.save 
       serialized_user = UserSerializer.new(user)
 
       json(201, serialized_user)
