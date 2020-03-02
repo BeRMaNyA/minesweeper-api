@@ -6,7 +6,9 @@ class UsersController < AppController
     user    = service.execute
 
     if user.persisted?
-      json(201, user: user.attributes)
+      serialized_user = UserSerializer.new(user)
+
+      json(201, serialized_user)
     else
       json(422, errors: user.errors.to_h)
     end
