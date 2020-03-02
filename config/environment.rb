@@ -9,4 +9,5 @@ Bundler.require(:default, ENV["RACK_ENV"])
 require_relative "db"
 require_relative "routes"
 
-Dir.glob('./app/{models}/*.rb', &method(:require))
+Dir.glob('./lib/**/*.rb', &method(:require))
+Dir.glob('./app/{models,serializers,services}/**/*.rb', &method(:require))
