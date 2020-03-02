@@ -1,0 +1,59 @@
+PATH
+  remote: ../fit-api
+  specs:
+    fit_api (0.0.1)
+      dry-inflector (~> 0.1)
+      rack (~> 2.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (6.0.2.1)
+      activesupport (= 6.0.2.1)
+    activesupport (6.0.2.1)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 0.7, < 2)
+      minitest (~> 5.1)
+      tzinfo (~> 1.1)
+      zeitwerk (~> 2.2)
+    bcrypt (3.1.13)
+    bson (4.8.0)
+    byebug (11.1.1)
+    coderay (1.1.2)
+    concurrent-ruby (1.1.6)
+    dotenv (2.7.5)
+    dry-inflector (0.2.0)
+    i18n (1.8.2)
+      concurrent-ruby (~> 1.0)
+    method_source (0.9.2)
+    minitest (5.14.0)
+    mongo (2.11.3)
+      bson (>= 4.4.2, < 5.0.0)
+    mongoid (7.0.5)
+      activemodel (>= 5.1, < 6.1)
+      mongo (>= 2.5.1, < 3.0.0)
+    pry (0.12.2)
+      coderay (~> 1.1.0)
+      method_source (~> 0.9.0)
+    rack (2.2.2)
+    thread_safe (0.3.6)
+    tzinfo (1.2.6)
+      thread_safe (~> 0.1)
+    zeitwerk (2.2.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bcrypt (~> 3.1.13)
+  byebug
+  dotenv
+  fit_api!
+  mongoid (~> 7.0.5)
+  pry
+
+RUBY VERSION
+   ruby 2.7.0p0
+
+BUNDLED WITH
+   2.1.2
