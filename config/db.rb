@@ -5,6 +5,4 @@ Mongoid.configure do |config|
     hosts: [ ENV["DB_HOST"] ],
     database: ENV["DB_NAME"],
   }
-
-  config.log_level = :warn
 end
