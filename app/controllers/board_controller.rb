@@ -11,10 +11,14 @@ class BoardController < AppController
   end
 
   def check 
+    check_params = params.permit(:x, :y)
+
     json @board.check(**check_params)
   end
 
   def flag
+    flag_params = params.permit(:x, :y, :type)
+
     json @board.flag(**flag_params)
   end
 
@@ -30,13 +34,5 @@ class BoardController < AppController
     halt 404, error: "Game not found or not started" unless @game
 
     @board = game.board
-  end
-
-  def check_params
-    params.permit(:x, :y)
-  end
-
-  def flag_params
-    params.permit(:x, :y, :type)
   end
 end

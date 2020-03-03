@@ -33,6 +33,7 @@ class GamesController < AppController
     check_scope! :delete_game
 
     @game.destroy
+    @game.state = "deleted"
 
     json @game
   end
@@ -46,8 +47,6 @@ class GamesController < AppController
       @game.fsm.trigger action
 
       json success: true
-    rescue MicroMachine::InvalidState
-      halt 500, error: "Game can't be #{action}d" 
     end
   end
 

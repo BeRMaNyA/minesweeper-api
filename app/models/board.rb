@@ -19,4 +19,17 @@ class Board
   def virtual_board
     @virtual_board ||= VirtualBoard.new(game)
   end
+
+  def win?
+    uncovered == game.mines
+  end
+
+  def reset
+    update( mines: nil, uncovered: cells.count )
+
+    cells.update_all(
+      state:    :uncovered,
+      has_mine: false
+    )
+  end
 end

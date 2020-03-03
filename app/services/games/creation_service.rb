@@ -37,7 +37,7 @@ module Games
             x:        col,
             y:        row, 
             state:    :uncovered,
-            has_bomb: false
+            has_mine: false
           )
         end
       end.flatten

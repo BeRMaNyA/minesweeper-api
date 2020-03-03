@@ -35,7 +35,7 @@ class VirtualBoard
 
     return unless cell
 
-    if @board.mines.empty?
+    unless @board.mines
       place_mines(x, y) 
       cell.reload
     end
@@ -46,7 +46,7 @@ class VirtualBoard
   def place_mines(x, y)
     mines = [ ]
 
-    while mines.count <= @game.mines
+    while mines.count < @game.mines
       cell = @board.cells.where(
         :x.ne   => x,
         :y.ne   => y,
