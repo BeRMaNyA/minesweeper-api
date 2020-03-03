@@ -9,6 +9,8 @@ module Games
         state: :started
       ))
 
+      game.check_time_entries
+
       if game.save
         create_empty_board(game)
       end

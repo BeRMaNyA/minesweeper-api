@@ -2,46 +2,36 @@
 
 class GameSerializer < AppSerializer
   def serialize(game)
-    board = get_board(game)
+    board        = serialize_board(game.board)
+    time_entries = serialize_time_entries(game.time_entries)
 
     {
-      id:    game.id.to_s,
-      name:  game.name,
-      state: game.state,
-      mines: game.mines,
-      rows:  game.rows,
-      cols:  game.cols,
+      id:           game.id.to_s,
+      name:         game.name,
+      state:        game.state,
+      mines:        game.mines,
+      rows:         game.rows,
+      cols:         game.cols,
+      time_entries: time_entries,
       **board
     }
   end
 
   private
 
-  def get_board(game)
+  def serialize_board(board)
     return {} unless options[:show_board]
 
-    cells = get_cells(game.board)
-
-    {
-      board: {
-        id:        game.board.id.to_s,
-        mines:     game.board.mines,
-        uncovered: game.board.uncovered,
-        cells:     cells
-      }
-    }
+    BoardSerializer.new(board).to_h
   end
 
-  def get_cells(board)
-    board.cells.map do |cell|
+  def serialize_time_entries(time_entries)
+    time_entries.map do |time_entry|
       {
-        id:         cell.id.to_s,
-        y:          cell.y,
-        x:          cell.x,
-        state:      cell.state,
-        has_bomb:   cell.has_bomb,
-        flag_type:  cell.flag_type,
-        flag_value: cell.flag_value
+        id:         time_entry.id.to_s,
+        start_time: time_entry.start_time,
+        end_time:   time_entry.end_time,
+        duration:   time_entry.duration
       }
     end
   end

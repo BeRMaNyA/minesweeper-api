@@ -18,10 +18,6 @@ class Game
 
   validates :name, :user, :state, :rows, :cols, :mines, presence: true
 
-  def total_duration
-    time_entries.sum &:duration
-  end
-
   def fsm
     @fsm ||= begin
       fsm = MicroMachine.new(state)
@@ -33,10 +29,27 @@ class Game
 
       fsm.on :any do
         self.state = fsm.state
-        self.save
+        check_time_entries
+        save!
       end
 
       fsm
     end
+  end
+
+  def check_time_entries
+    if playing?
+      time_entries << TimeEntry.new(start_time: Time.now.utc)
+    else
+      time_entries.last.finish
+    end
+  end
+
+  def playing?
+    state == :started
+  end
+
+  def total_duration
+    time_entries.sum &:duration
   end
 end

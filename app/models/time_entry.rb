@@ -9,7 +9,8 @@ class TimeEntry
 
   embedded_in :game
 
-  def set_duration
+  def finish
+    self.end_time = Time.now.utc
     self.duration = (end_time - start_time).round(2)
   end
 end
