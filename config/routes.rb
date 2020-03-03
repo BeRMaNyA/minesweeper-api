@@ -10,6 +10,11 @@ FitApi::Router.define do
   post :login, to: "auth#login"
 
   resources :games, only: %i(index create destroy) do
+    member do
+      post :pause
+      post :resume
+    end
+
     resource :board, only: :show do
       post :check
       post :mark

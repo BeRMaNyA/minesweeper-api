@@ -2,10 +2,12 @@
 
 class GamesController < AppController
   before_action :authenticate!
-  before_action :check_scope!, only: :create
+  before_action :load_game, only: %i(destroy pause resume)
 
   # GET /games
   def index
+    check_scope! :list_games
+
     self.serializer_opts = { paginate: true }
 
     json paginate(current_user.games)
@@ -13,9 +15,11 @@ class GamesController < AppController
 
   # POST /games
   def create
+    check_scope! :create_game
+
     game = Games::CreationService.call(current_user, game_params)
 
-    self.serializer_opts = { board: true }
+    self.serializer_opts = { show_board: true }
 
     if game.persisted?
       json 201, game
@@ -26,19 +30,36 @@ class GamesController < AppController
 
   # DELETE /games/:id
   def destroy
-    game = current_user.games.find(params.id)
-    game.destroy
+    check_scope! :delete_game
 
-    json id: game.id.to_s
+    @game.destroy
+
+    json @game
+  end
+
+  # POST /games/:id/action
+  #
+  %i(pause resume).each do |action|
+    define_method action do
+      check_scope! :play_game
+
+      @game.fsm.trigger action
+
+      json success: true
+    rescue MicroMachine::InvalidState
+      halt 500, error: "Game can't be #{action}d" 
+    end
   end
 
   private
 
-  def game_params
-    params.game.permit(:name, :rows, :cols, :mines)
+  def load_game
+    @game = current_user.games.where(id: params.id).first
+
+    halt 404, error: "Game not found" unless @game
   end
 
-  def check_scope!
-    halt 401 unless scopes.include?('create_game')
+  def game_params
+    params.game.permit(:name, :rows, :cols, :mines)
   end
 end

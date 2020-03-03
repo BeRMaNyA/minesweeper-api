@@ -18,7 +18,7 @@ class GameSerializer < AppSerializer
   private
 
   def get_board(game)
-    return {} unless options[:board]
+    return {} unless options[:show_board]
 
     cells = get_cells(game.board)
 

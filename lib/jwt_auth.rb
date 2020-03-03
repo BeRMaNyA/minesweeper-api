@@ -3,7 +3,7 @@
 require "jwt"
 
 module JWTAuth
-  DEFAULT_SCOPES = ["create_game", "play_game"]
+  DEFAULT_SCOPES = %w(list_games create_game delete_game play_game)
 
   module_function
 

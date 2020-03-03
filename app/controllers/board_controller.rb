@@ -13,7 +13,7 @@ class BoardController < AppController
   private
 
   def load_game
-    @game = Game.find(params.game_id)
+    @game = current_user.games.where(id: params.game_id).first
 
     halt 404, error: "Game not found" unless @game
   end

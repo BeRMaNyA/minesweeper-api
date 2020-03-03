@@ -67,4 +67,8 @@ class AppController < FitApi::Controller
 
     collection.page(page).per(limit)
   end
+
+  def check_scope!(scope)
+    halt 401, error: "Unauthorized" unless scopes.include?(scope.to_s)
+  end
 end
