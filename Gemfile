@@ -1,8 +1,7 @@
 source "https://rubygems.org"
 ruby "2.7.0"
 
-gem "fit_api", path: "~/new/fit-api/"
-
+gem "fit_api",          "~> 1.1.3"
 gem "mongoid",          "~> 7.0.5"
 gem "kaminari-mongoid", "~> 1.0.1"
 gem "bcrypt",           "~> 3.1.13"
