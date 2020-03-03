@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 class Board
   include Mongoid::Document
+  extend Forwardable
+
+  def_delegators :virtual_board, :check, :flag
 
   field :mines,     type: Array
   field :uncovered, type: Integer
@@ -11,8 +16,7 @@ class Board
 
   index({ "cells.x": 1, "cells.y": 1 })
 
-  # TODO: need to be implemented
   def virtual_board
-    @virtual_board ||= VirtualBoard.new(self)
+    @virtual_board ||= VirtualBoard.new(game)
   end
 end

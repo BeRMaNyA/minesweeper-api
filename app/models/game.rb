@@ -50,6 +50,8 @@ class Game
   end
 
   def total_duration
-    time_entries.sum &:duration
+    time_entries.select do |time_entry|
+      time_entry.start_time && time_entry.end_time
+    end.sum &:duration
   end
 end

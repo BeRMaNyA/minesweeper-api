@@ -12,8 +12,9 @@ class User
   field :crypted_password, type: String
   field :token,            type: String
 
-  has_many :games, order: :created_at.desc,
-                          validate: false
+  has_many :games, order:     :created_at.desc,
+                   dependent: :destroy,
+                   validate:  false
 
   validates :name, :username, presence: true
   validates :username, uniqueness: true, length: { minimum: 3 }
