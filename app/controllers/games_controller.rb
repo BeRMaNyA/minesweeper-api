@@ -19,7 +19,7 @@ class GamesController < AppController
 
     game = Games::CreationService.call(current_user, game_params)
 
-    self.serializer_opts = { show_board: true }
+    self.serializer_opts = { board: true }
 
     if game.persisted?
       json 201, game
@@ -39,7 +39,6 @@ class GamesController < AppController
   end
 
   # POST /games/:id/action
-  #
   %i(pause resume).each do |action|
     define_method action do
       check_scope! :play_game

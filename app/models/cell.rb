@@ -17,11 +17,19 @@ class Cell
 
       fsm.when :free,      :uncovered => :free
       fsm.when :flag,      :uncovered => :flagged
-      fsm.when :uncover,   :flagged   => :uncovered
+      fsm.when :unflag,    :flagged   => :uncovered
       fsm.when :game_flag, :uncovered => :game_flagged
 
       fsm.on :any do
         self.state = fsm.state
+      end
+
+      fsm.on :flag do
+        board.uncovered -= 1
+      end
+
+      fsm.on :uncover do
+        board.uncovered += 1
       end
 
       fsm

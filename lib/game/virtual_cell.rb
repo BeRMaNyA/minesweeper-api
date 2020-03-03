@@ -2,16 +2,18 @@
 
 module VirtualCell
   def check
-    return { game_over: true } if has_mine
+    if has_mine
+      board.game.fsm.trigger(:lose)
+      return { game_over: true }
+    end
 
     mines = count_mines
 
     if mines.zero?
-      fsm.trigger(:free)
-      save
-      cells = visit_neighbours([ self ])
+      fsm.trigger(:free) and save
+      cells = visit_neighbours([ self.id.to_s ])
     else
-      cells = [ self ]
+      cells = [ self.id.to_s ]
       fsm.trigger(:game_flag)
       self.flag_value = mines
       save
@@ -20,9 +22,30 @@ module VirtualCell
     board.uncovered -= cells.count
     board.save
 
-    game.fsm.trigger!(:win) if board.win?
+    board.game.fsm.trigger(:win) if board.win?
+
+    # TODO: use serializer
+    #cells = cells.map &:attributes
 
     return { cells: cells, win: board.win? }
+  end
+
+  def flag(type)
+    fsm.trigger(:flag)
+    self.flag_value = type
+
+    save and board.save
+
+    game.fsm.trigger(:win) if board.win?
+
+    return { cells: [ self.attributes ], win: board.win? }
+  end
+
+  def unflag
+    fsm.trigger(:unflag)
+    self.flag_value = nil
+    save and board.save
+    self
   end
 
   def count_mines
@@ -32,13 +55,14 @@ module VirtualCell
   end
 
   def visit_neighbours(visited = [])
-    neighbours = get_neighbours[0..3].compact
+    neighbours = get_neighbours[0..3].compact.reject do |neighbour|
+      visited.include?(neighbour.id.to_s)
+    end
+
+    byebug
 
     neighbours.each do |neighbour|
-      byebug
-      next if visited.include?(neighbour)
-
-      visited << neighbour
+      visited << neighbour.id.to_s
 
       next if neighbour.has_mine
 
@@ -50,7 +74,9 @@ module VirtualCell
         neighbour.fsm.trigger(:free)
         neighbour.save
 
-        visited << neighbour.visit_neighbours(visited)
+        new_visits = neighbour.visit_neighbours(visited)
+        byebug
+        visited.concat(new_visits)
       end
     end
 

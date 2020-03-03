@@ -6,7 +6,7 @@ class Board
   include Mongoid::Document
   extend Forwardable
 
-  def_delegators :virtual_board, :check, :flag
+  def_delegators :virtual_board, :check, :flag, :unflag
 
   field :mines,     type: Array
   field :uncovered, type: Integer
@@ -21,7 +21,7 @@ class Board
   end
 
   def win?
-    uncovered == game.mines
+    uncovered.zero?
   end
 
   def reset

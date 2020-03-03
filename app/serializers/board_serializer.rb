@@ -5,7 +5,6 @@ class BoardSerializer < AppSerializer
     cells = serialize_cells(board.cells)
 
     {
-      id:        board.id.to_s,
       mines:     board.mines,
       uncovered: board.uncovered,
       cells:     cells

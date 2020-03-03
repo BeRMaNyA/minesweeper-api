@@ -11,20 +11,63 @@ class VirtualBoard
   #
   def check(x:, y:)
     cell = load_cell_and_place_mines(x, y)
+
     return invalid_play unless cell
+
     cell.check
   end
 
   # Flag a board cell
-  # Return cell with updated attribute
+  # Return the cell with updated attributes
   #
   def flag(type:, x:, y:)
     cell = load_cell_and_place_mines(x, y)
+
     return invalid_play unless cell
-    cell.flag(type)
+
+    cell.fsm.trigger(:flag)
+    cell.flag_value = type
+
+    cell.save and cell.board.save
+ 
+    if board.win?
+      cell.body.game.fsm.trigger(:win)
+    end
+
+    return {
+      cells: [ self.attributes ],
+      win:   board.win?
+    }
+  end
+
+  # Remove a flag
+  # Return the cell with updated attributes
+  #
+  def unflag(x:, y:)
+    cell = load_flagged_cell(x, y)
+
+    return invalid_play unless cell
+
+    cell.fsm.trigger(:unflag)
+    cell.flag_value = nil
+
+    cell.save and cell.board.save
+
+    return {
+      cells: [ self.attributes ],
+      win:   board.win?
+    }
   end
 
   private
+
+  def load_flagged_cell(x, y)
+    @board.cells.where(
+      state: :flagged,
+      x: x,
+      y: y
+    ).first
+  end
 
   def load_cell_and_place_mines(x, y)
     cell = @board.cells.where(

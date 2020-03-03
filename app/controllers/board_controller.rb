@@ -4,35 +4,53 @@ class BoardController < AppController
   before_action :authenticate!
   before_action :load_game_and_board!
 
+  # GET /games/:game_id/board
+  #
   def show
     self.serializer_opts = { board: true }
 
     json @game
   end
 
+  # POST /games/:game_id/board/check
+  #
   def check 
-    check_params = params.permit(:x, :y)
-
-    json @board.check(**check_params)
+    json @board.check(
+      x: params.x,
+      y: params.y
+    )
   end
 
+  # POST /games/:game_id/board/flag
+  #
   def flag
-    flag_params = params.permit(:x, :y, :type)
+    json @board.flag(
+      x:    params.x,
+      y:    params.y,
+      type: params.type
+    )
+  end
 
-    json @board.flag(**flag_params)
+  # POST /games/:game_id/board/unflag
+  #
+  def unflag 
+    json @board.unflag(
+      x: params.x,
+      y: params.y
+    )
   end
 
   private
 
   def load_game_and_board!
-    params = { id: params.game_id }
+    query = { id: params.game_id }
 
-    params[:state] = :started unless action == :show
+    query[:state] = :started unless action == :show
 
-    @game = current_user.games.where(params).first
+    @game = current_user.games.where(query).first
 
     halt 404, error: "Game not found or not started" unless @game
 
-    @board = game.board
+    @board = @game.board
   end
 end

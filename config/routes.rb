@@ -17,7 +17,8 @@ FitApi::Router.define do
 
     resource :board, only: :show do
       post :check
-      post :mark
+      post :flag
+      post :unflag
     end
   end
 end

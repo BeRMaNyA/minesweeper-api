@@ -20,7 +20,7 @@ class GameSerializer < AppSerializer
   private
 
   def serialize_board(board)
-    return {} unless options[:show_board]
+    return {} unless options[:board]
 
     BoardSerializer.new(board).to_h
   end
