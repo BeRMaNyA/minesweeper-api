@@ -7,7 +7,6 @@ describe User do
     fields = %i(name username crypted_password token)
 
     it { is_expected.to have_fields(*fields) }
-    it { is_expected.to have_timestamps.shortened }
   end
 
   describe "relationships" do
@@ -15,11 +14,11 @@ describe User do
   end
 
   describe "validations" do
-    fields = %i(name username password)
-
-    fields.each do |field|
-      it { is_expected.to validate_presence_of(field) }
-    end
+    it { is_expected.to validate_presence_of(:username) }
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_length_of(:name) }
+    it { is_expected.to validate_presence_of(:password).on(:create) }
+    it { is_expected.to validate_length_of(:password).on(:create) }
   end
 
   describe "indexes" do

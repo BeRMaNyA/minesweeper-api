@@ -19,7 +19,8 @@ class User
   validates :name, :username, presence: true
   validates :username, uniqueness: true, length: { minimum: 3 }
   validates :name, length: { minimum: 2 }
-  validates :password, presence: true, length: { minimum: 6 }, on: :create
+  validates :password, presence: true, on: :create
+  validates :password, length: { minimum: 6 }, on: :create
 
   before_create :set_crypted_password
   before_create :set_jwt_token

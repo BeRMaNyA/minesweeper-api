@@ -4,7 +4,7 @@ require "spec_helper"
 
 describe UsersController do
   describe "POST #create" do
-    let(:params) { { first_name: "API", last_name: "Test", cell_phone: "00000", zip_code: "4444" } }
+    let(:params) { { user: { name: "Test" } } }
 
     context "with valid params" do
       it "creates a contact" do

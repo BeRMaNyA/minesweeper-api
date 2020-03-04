@@ -10,6 +10,7 @@ You can check the [demo here](https://minesweeper-berna.herokuapp.com/)
 * [MineSweeper-API](#fit-api)
     * [Table of Contents](#table-of-contents)
     * [Dependencies](#dependencies)
+    * [Running the tests](#running-the-tests)
     * [Running the app](#running-the-app)
     * [Endpoints](#endpoints)
         * [Signup](#signup)
@@ -35,14 +36,20 @@ You need to install
 ### Gems
 
 ```bash
-bundle install
+$ bundle install
+```
+
+## Running the tests
+
+```ruby
+$ rspec spec/
 ```
 
 ## Running the app
 
 Don't forget to edit the `.env` file.
 
-```
+```bash
 $ rackup -p 3000
 ```
 

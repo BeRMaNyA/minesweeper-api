@@ -5,3 +5,5 @@ Mongoid.configure do |config|
     uri: ENV["MONGO_URI"]
   }
 end
+
+Mongo::Logger.logger.level = Logger::FATAL
