@@ -12,6 +12,7 @@ You can check the [demo here](https://minesweeper-berna.herokuapp.com/)
     * [Dependencies](#dependencies)
     * [Running the tests](#running-the-tests)
     * [Running the app](#running-the-app)
+    * [App Console](#app-console)
     * [Endpoints](#endpoints)
         * [Signup](#signup)
         * [Auth](#auth)
@@ -51,6 +52,12 @@ Don't forget to edit the `.env` file.
 
 ```bash
 $ rackup -p 3000
+```
+
+### App Console
+
+```bash
+$ pry
 ```
 
 ## Endpoints
@@ -181,10 +188,7 @@ Curl request:
 curl http://localhost:3000/games \
 -H "Authorization: Bearer $BEARER" \
 -H "Content-Type: application/json" \
--d 'game[name]=Hello World' \
--d 'game[rows]=6' \
--d 'game[cols]=6' \
--d 'game[mines]=3'
+'{"game": { "name": "Hello World", "rows": "6", "cols": "6", "mines": "3" } }'
 ```
 
 **Note::** You can pass the params like that without encoding to JSON
@@ -365,12 +369,12 @@ Curl request:
 curl http://localhost:3000/games/:id/board/check \
 -H "Authorization: Bearer $BEARER" \
 -H "Content-Type: application/json" \
--d ''
+-d '{"x":"0", "y":"0"}'
 ```
 
 #### Response
 
-Returns the cells affected:
+Returns the bundle installaffected cells:
 
 ```javascript
 {
@@ -404,15 +408,15 @@ POST /games/:id/board/flag
 Curl request:
 
 ```bash
-curl http://localhost:3000/games/:id/board/check \
+curl http://localhost:3000/games/:id/board/flag \
 -H "Authorization: Bearer $BEARER" \
 -H "Content-Type: application/json" \
--d ''
+-d '{"type":"flag", "x":"0", "y":"0"}'
 ```
 
 #### Response
 
-Returns the cells affected:
+Returns the affected cells:
 
 ```javascript
 {
