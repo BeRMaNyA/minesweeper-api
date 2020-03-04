@@ -3,6 +3,8 @@
 This API was developed with [fit-api](https://github.com/BeRMaNyA/fit-api), an experimental library developed by myself.  
 FitApi is based on Rack and aims to speed up the API development with Ruby.
 
+You can check the [demo here](https://minesweeper-berna.herokuapp.com/)
+
 ## Table of Contents
 
 * [MineSweeper-API](#fit-api)
