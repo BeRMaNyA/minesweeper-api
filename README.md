@@ -63,9 +63,9 @@ POST /users
 Curl request:
 
 ```bash
-curl -i -X POST -H "Content-Type: application/json" \
--d '{ "user": { "name": "Joe Doe", "username": "joedoe", "password": "123456" } }' \
-http://localhost:3000/users
+curl http://localhost:3000/users \
+-H "Content-Type: application/json" \
+-d '{ "user": { "name": "Joe Doe", "username": "joedoe", "password": "123456" } }'
 ```
 
 #### Response
@@ -99,8 +99,7 @@ Curl request:
 ```bash
 curl http://localhost:3000/login \
 -H "Content-Type: application/json" \
--d '{ "username": "joedoe", "password": "123456" }' \
-http://localhost:3000/login
+-d '{ "username": "joedoe", "password": "123456" }'
 ```
 
 #### Response
