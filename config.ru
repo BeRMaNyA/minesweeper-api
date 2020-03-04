@@ -6,8 +6,6 @@ require_relative "config/environment"
 
 # Rack plugins
 
-FitApi.use Rack::CommonLogger, Logger.new("log/app.log")
-
 FitApi.use Rack::Cors do |config|
   config.allow do |allow|
     allow.origins '*'
