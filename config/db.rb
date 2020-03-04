@@ -2,7 +2,6 @@
 
 Mongoid.configure do |config|
   config.clients.default = {
-    hosts: [ ENV["DB_HOST"] ],
-    database: ENV["DB_NAME"],
+    uri: ENV["MONGO_URI"]
   }
 end
