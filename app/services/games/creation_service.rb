@@ -24,9 +24,9 @@ module Games
       cells = build_cells(game)
 
       Board.create(
-        game:      game,
-        cells:     cells,
-        uncovered: cells.count
+        game:    game,
+        cells:   cells,
+        covered: cells.count
       )
     end
 
@@ -36,7 +36,7 @@ module Games
           Cell.new(
             x:        col,
             y:        row, 
-            state:    :uncovered,
+            state:    :covered,
             has_mine: false
           )
         end

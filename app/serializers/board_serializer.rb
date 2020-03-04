@@ -5,9 +5,9 @@ class BoardSerializer < AppSerializer
     cells = serialize_cells(board.cells)
 
     {
-      mines:     board.mines,
-      uncovered: board.uncovered,
-      cells:     cells
+      mines:   board.mines,
+      covered: board.covered,
+      cells:   cells
     }
   end
 

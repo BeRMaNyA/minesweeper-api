@@ -14,7 +14,19 @@ class VirtualBoard
 
     return invalid_play unless cell
 
-    cell.check
+    if cell.has_mine
+      @board.game.fsm.trigger(:lose)
+      return { game_over: true }
+    end
+
+    history = cell.visit.map(&:attributes)
+
+    @board.game.fsm.trigger(:win) if @board.win?
+
+    return {
+      cells: history,
+      win: @board.win?
+    }
   end
 
   # Flag a board cell
@@ -25,18 +37,15 @@ class VirtualBoard
 
     return invalid_play unless cell
 
-    cell.fsm.trigger(:flag)
-    cell.flag_value = type
+    cell.flag(:user_flag, type)
 
-    cell.save and cell.board.save
- 
-    if board.win?
-      cell.body.game.fsm.trigger(:win)
+    if cell.board.win?
+      @board.game.fsm.trigger(:win)
     end
 
     return {
-      cells: [ self.attributes ],
-      win:   board.win?
+      cells: [ cell.attributes ],
+      win:   @board.win?
     }
   end
 
@@ -61,17 +70,9 @@ class VirtualBoard
 
   private
 
-  def load_flagged_cell(x, y)
-    @board.cells.where(
-      state: :flagged,
-      x: x,
-      y: y
-    ).first
-  end
-
   def load_cell_and_place_mines(x, y)
     cell = @board.cells.where(
-      state: :uncovered,
+      state: :covered,
       x: x,
       y: y
     ).first
@@ -84,6 +85,14 @@ class VirtualBoard
     end
 
     cell.extend(VirtualCell)
+  end
+
+  def load_flagged_cell(x, y)
+    @board.cells.where(
+      state: :flagged,
+      x: x,
+      y: y
+    ).first
   end
 
   def place_mines(x, y)
