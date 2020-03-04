@@ -6,7 +6,11 @@ class AppController < FitApi::Controller
 
   # GET /
   def root
-    json "Minesweeper by Berna"
+    json game: "Minesweeper by Berna"
+  end
+
+  def error_404
+    json 404, error: "Page not found"
   end
 
   private

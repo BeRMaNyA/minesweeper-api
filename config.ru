@@ -8,4 +8,14 @@ require_relative "config/environment"
 
 FitApi.use Rack::CommonLogger, Logger.new("log/app.log")
 
+FitApi.use Rack::Cors do |config|
+  config.allow do |allow|
+    allow.origins '*'
+    allow.resource '/*',
+      methods: %i(get post put delete),
+      headers: :any,
+      max_age: 0
+  end
+end
+
 run FitApi.app

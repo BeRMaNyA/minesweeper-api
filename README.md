@@ -1,7 +1,6 @@
 # MineSweeper-API 
 
-This API was developed with [fit-api](https://github.com/BeRMaNyA/fit-api), an experimental library
-developed by myself.
+This API was developed with [fit-api](https://github.com/BeRMaNyA/fit-api), an experimental library developed by myself.  
 FitApi is based on Rack and aims to speed up the API development with Ruby.
 
 ## Table of Contents
@@ -29,7 +28,6 @@ FitApi is based on Rack and aims to speed up the API development with Ruby.
 You need to install
 
 - [Bundler](https://bundler.io/)
-- [SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 - [MongoDB](https://mongodb.com)
 
 ### Gems
@@ -40,7 +38,7 @@ bundle install
 
 ## Running the app
 
-If you only need to run the app server:
+Don't forget to edit the `.env` file.
 
 ```
 $ rackup -p 3000
@@ -348,12 +346,10 @@ curl http://localhost:3000/board \
 POST /games/:id/board/check
 ```
 
-```
 | Parameter | Type      | Description |
 | :---      | :---      | :---        |
 | `x`       | `integer` | **Required**. Cell position |
 | `y`       | `integer` | **Required**. Cell position |
-```
 
 Curl request:
 
@@ -391,13 +387,11 @@ or
 POST /games/:id/board/flag
 ```
 
-```
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
 | `type` | `string`  | **Required**. Flag type |
 | `x`    | `integer` | **Required**. Cell position |
 | `y`    | `integer` | **Required**. Cell position |
-```
 
 Curl request:
 
