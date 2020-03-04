@@ -42,7 +42,7 @@ $ bundle install
 
 ## Running the tests
 
-```ruby
+```bash
 $ rspec spec/
 ```
 
@@ -62,6 +62,14 @@ $ pry
 
 ## Endpoints
 
+You should set these env vars so you can just copy-paste the curls examples:
+
+```bash
+export GAMEHOST="https://minesweeper-berna.herokuapp.com"
+export BEARER="" # copy your jwt token
+export GAMEID="" # copy your created game id
+```
+
 ### Signup
 
 ```http
@@ -77,7 +85,7 @@ POST /users
 Curl request:
 
 ```bash
-curl http://localhost:3000/users \
+curl $GAMEHOST/users \
 -H "Content-Type: application/json" \
 -d '{ "user": { "name": "Joe Doe", "username": "joedoe", "password": "123456" } }'
 ```
@@ -93,6 +101,10 @@ curl http://localhost:3000/users \
     "token": "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODMyNjMyMzQsImlhdCI6MTU4MzI1OTYzNCwiaXNzIjoibWluZXN3ZWVwZXItYXBpLmNvbSIsInNjb3BlcyI6WyJsaXN0X2dhbWVzIiwiY3JlYXRlX2dhbWUiLCJkZWxldGVfZ2FtZSIsInBsYXlfZ2FtZSJdLCJ1c2VyIjp7ImlkIjoiNWU1ZTlmZjI0OGRkNDI2NWRiOGU3NTNkIn19.nf5_ffzAwwltUlmAptA5F6kq6aZPjmKawUPAuGtin1k"
   }
 }
+```
+
+```bash
+export BEARER="eyJhbGciOiJIUzI1Ni..."
 ```
 
 ### Auth
@@ -111,7 +123,7 @@ POST /login
 Curl request:
 
 ```bash
-curl http://localhost:3000/login \
+curl $GAMEHOST/login \
 -H "Content-Type: application/json" \
 -d '{ "username": "joedoe", "password": "123456" }'
 ```
@@ -124,6 +136,10 @@ curl http://localhost:3000/login \
 }
 ```
 
+```bash
+export BEARER="eyJhbGciOiJIUzI1Ni..."
+```
+
 ### List Games
 
 ```http
@@ -133,7 +149,7 @@ GET /games
 Curl request:
 
 ```bash
-curl http://localhost:3000/games \
+curl $GAMEHOST/games \
 -H "Authorization: Bearer $BEARER" \
 -H "Content-Type: application/json"
 ```
@@ -185,13 +201,11 @@ POST /games
 Curl request:
 
 ```bash
-curl http://localhost:3000/games \
+curl $GAMEHOST/games \
 -H "Authorization: Bearer $BEARER" \
 -H "Content-Type: application/json" \
-'{"game": { "name": "Hello World", "rows": "6", "cols": "6", "mines": "3" } }'
+-d '{"game": { "name": "Hello World", "rows": "6", "cols": "6", "mines": "3" } }'
 ```
-
-**Note::** You can pass the params like that without encoding to JSON
 
 #### Response
 
@@ -231,6 +245,10 @@ curl http://localhost:3000/games \
 }
 ```
 
+```bash
+export GAMEID="5e5ea3f148dd4265db8e7565"
+```
+
 ### Delete a Game
 
 ```http
@@ -240,12 +258,10 @@ DELETE /games/:id
 Curl request:
 
 ```bash
-curl -i -X DELETE http://localhost:3000/games \
+curl -i -X DELETE $GAMEHOST/games/$GAMEID \
 -H "Authorization: Bearer $BEARER" \
--H "Content-Type: application/json" \
+-H "Content-Type: application/json"
 ```
-
-**Note::** You can pass the params like that without encoding to JSON
 
 #### Response
 
@@ -278,8 +294,8 @@ POST /games/:id/pause
 
 Curl request:
 
-```
-curl -i -X POST http://localhost:3000/games/:id/pause \
+```bash
+curl -i -X POST $GAMEHOST/games/$GAMEID/pause \
 -H "Authorization: Bearer $BEARER" \
 -H "Content-Type: application/json" \
 -d ""
@@ -301,8 +317,8 @@ POST /games/:id/resume
 
 Curl request:
 
-```
-curl -i -X POST http://localhost:3000/games/:id/resume \
+```bash
+curl -i -X POST $GAMEHOST/games/$GAMEID/resume \
 -H "Authorization: Bearer $BEARER" \
 -H "Content-Type: application/json" \
 -d ""
@@ -325,7 +341,7 @@ GET /games/:id/board
 Curl request:
 
 ```bash
-curl http://localhost:3000/board \
+curl $GAMEHOST/games/$GAMEID/board \
 -H "Authorization: Bearer $BEARER" \
 -H "Content-Type: application/json"
 ```
@@ -366,7 +382,7 @@ POST /games/:id/board/check
 Curl request:
 
 ```bash
-curl http://localhost:3000/games/:id/board/check \
+curl $GAMEHOST/games/$GAMEID/board/check \
 -H "Authorization: Bearer $BEARER" \
 -H "Content-Type: application/json" \
 -d '{"x":"0", "y":"0"}'
@@ -374,13 +390,11 @@ curl http://localhost:3000/games/:id/board/check \
 
 #### Response
 
-Returns the bundle installaffected cells:
+Returns the affected cells:
 
 ```javascript
 {
-  "cells": [
-   ....
-  ],
+  "cells": [ ... ],
   "win": false
 }
 ```
@@ -408,7 +422,7 @@ POST /games/:id/board/flag
 Curl request:
 
 ```bash
-curl http://localhost:3000/games/:id/board/flag \
+curl $GAMEHOST/games/$GAMEID/board/flag \
 -H "Authorization: Bearer $BEARER" \
 -H "Content-Type: application/json" \
 -d '{"type":"flag", "x":"0", "y":"0"}'
@@ -420,9 +434,7 @@ Returns the affected cells:
 
 ```javascript
 {
-  "cells": [
-   ....
-  ],
+  "cells": [ ... ],
   "win": false
 }
 ```

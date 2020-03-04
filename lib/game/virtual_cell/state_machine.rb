@@ -14,6 +14,7 @@ module StateMachine
         self.state = fsm.state
 
         if state == :covered
+          board.flag_value = nil
           board.covered += 1
         else
           board.covered -= 1 

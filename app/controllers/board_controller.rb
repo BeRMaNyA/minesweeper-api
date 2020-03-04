@@ -5,7 +5,6 @@ class BoardController < AppController
   before_action :load_game_and_board!
 
   # GET /games/:game_id/board
-  #
   def show
     self.serializer_opts = { board: true }
 
@@ -13,7 +12,6 @@ class BoardController < AppController
   end
 
   # POST /games/:game_id/board/check
-  #
   def check 
     json @board.check(
       x: params.x,
@@ -22,7 +20,6 @@ class BoardController < AppController
   end
 
   # POST /games/:game_id/board/flag
-  #
   def flag
     json @board.flag(
       x:    params.x,
@@ -32,7 +29,6 @@ class BoardController < AppController
   end
 
   # POST /games/:game_id/board/unflag
-  #
   def unflag 
     json @board.unflag(
       x: params.x,

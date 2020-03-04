@@ -32,8 +32,8 @@ class GamesController < AppController
   def destroy
     check_scope! :delete_game
 
-    @game.destroy
     @game.state = "deleted"
+    @game.destroy
 
     json @game
   end

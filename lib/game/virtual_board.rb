@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 class VirtualBoard
+  extend Forwardable
+
+  def_delegators :@game, :fsm, :board
+
   def initialize(game)
-    @game  = game
-    @board = game.board
+    @game = game
   end
 
   # Check a board cell (place the mines if it's the first move)
@@ -15,17 +20,17 @@ class VirtualBoard
     return invalid_play unless cell
 
     if cell.has_mine
-      @board.game.fsm.trigger(:lose)
+      fsm.trigger(:lose)
       return { game_over: true }
     end
 
-    history = cell.visit.map(&:attributes)
+    history = cell.visit.map &:attributes
 
-    @board.game.fsm.trigger(:win) if @board.win?
+    fsm.trigger(:win) if board.reload.win?
 
     return {
       cells: history,
-      win: @board.win?
+      win: board.win?
     }
   end
 
@@ -39,13 +44,11 @@ class VirtualBoard
 
     cell.flag(:user_flag, type)
 
-    if cell.board.win?
-      @board.game.fsm.trigger(:win)
-    end
+    fsm.trigger(:win) if board.reload.win?
 
     return {
       cells: [ cell.attributes ],
-      win:   @board.win?
+      win:   board.win?
     }
   end
 
@@ -58,9 +61,7 @@ class VirtualBoard
     return invalid_play unless cell
 
     cell.fsm.trigger(:unflag)
-    cell.flag_value = nil
-
-    cell.save and cell.board.save
+    board.reload
 
     return {
       cells: [ self.attributes ],
@@ -71,7 +72,7 @@ class VirtualBoard
   private
 
   def load_cell_and_place_mines(x, y)
-    cell = @board.cells.where(
+    cell = board.cells.where(
       state: :covered,
       x: x,
       y: y
@@ -79,7 +80,7 @@ class VirtualBoard
 
     return unless cell
 
-    unless @board.mines
+    unless board.mines
       place_mines(x, y) 
       cell.reload
     end
@@ -88,8 +89,8 @@ class VirtualBoard
   end
 
   def load_flagged_cell(x, y)
-    @board.cells.where(
-      state: :flagged,
+    board.cells.where(
+      state: :flagged_by_user,
       x: x,
       y: y
     ).first
@@ -99,7 +100,7 @@ class VirtualBoard
     mines = [ ]
 
     while mines.count < @game.mines
-      cell = @board.cells.where(
+      cell = board.cells.where(
         :x.ne   => x,
         :y.ne   => y,
         :id.nin => mines
@@ -111,8 +112,8 @@ class VirtualBoard
       mines << cell.id
     end
 
-    @board.mines = mines
-    @board.save
+    board.mines = mines
+    board.save
   end
 
   def invalid_play
