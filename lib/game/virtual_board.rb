@@ -1,18 +1,8 @@
 # frozen_string_literal: true
 
-require 'forwardable'
-
-class VirtualBoard
-  extend Forwardable
-
-  def_delegators :@game, :fsm, :board
-
-  def initialize(game)
-    @game = game
-  end
-
+module VirtualBoard
   # Check a board cell (place the mines if it's the first move)
-  # Return game state and the affected cells with updated attrs
+  # Return the game state and the affected cells
   #
   def check(x:, y:)
     cell = load_cell_and_place_mines(x, y)
@@ -20,17 +10,17 @@ class VirtualBoard
     return invalid_play unless cell
 
     if cell.has_mine
-      fsm.trigger(:lose)
+      game.fsm.trigger(:lose)
       return { game_over: true }
     end
 
-    history = cell.visit.map &:attributes
+    history = CellSerializer.new(cell.visit).to_a
 
-    fsm.trigger(:win) if board.reload.win?
+    game.fsm.trigger(:win) if self.reload.win?
 
     return {
       cells: history,
-      win: board.win?
+      win: self.win?
     }
   end
 
@@ -44,11 +34,13 @@ class VirtualBoard
 
     cell.flag(:user_flag, type)
 
-    fsm.trigger(:win) if board.reload.win?
+    game.fsm.trigger(:win) if self.reload.win?
+
+    cell = CellSerializer.new(cell).to_h
 
     return {
-      cells: [ cell.attributes ],
-      win:   board.win?
+      win: self.win?,
+      **cell
     }
   end
 
@@ -61,27 +53,23 @@ class VirtualBoard
     return invalid_play unless cell
 
     cell.fsm.trigger(:unflag)
-    board.reload
 
-    return {
-      cells: [ self.attributes ],
-      win:   board.win?
-    }
+    return CellSerializer.new(cell).to_h
   end
 
   private
 
   def load_cell_and_place_mines(x, y)
-    cell = board.cells.where(
-      state: :covered,
+    cell = self.cells.where(
+      state: :hidden,
       x: x,
       y: y
     ).first
 
     return unless cell
 
-    unless board.mines
-      place_mines(x, y) 
+    unless self.mine_ids
+      place_mines(cell) 
       cell.reload
     end
 
@@ -89,31 +77,31 @@ class VirtualBoard
   end
 
   def load_flagged_cell(x, y)
-    board.cells.where(
+    self.cells.where(
       state: :flagged_by_user,
       x: x,
       y: y
     ).first
   end
 
-  def place_mines(x, y)
-    mines = [ ]
+  def place_mines(origin)
+    banned_ids = [ origin.id ]
+    mine_ids = [ ]
 
-    while mines.count < @game.mines
-      cell = board.cells.where(
-        :x.ne   => x,
-        :y.ne   => y,
-        :id.nin => mines
+    while mine_ids.count < self.mines
+      cell = self.cells.where(
+        :id.nin => banned_ids
       ).sample
 
       cell.has_mine = true
       cell.save
 
-      mines << cell.id
+      mine_ids << cell.id.to_s
+      banned_ids << cell.id
     end
 
-    board.mines = mines
-    board.save
+    self.mine_ids = mine_ids
+    self.save
   end
 
   def invalid_play

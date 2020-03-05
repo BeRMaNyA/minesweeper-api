@@ -6,13 +6,11 @@ module Games
 
     def call(user, params)
       game = user.games.build(params.merge(
-        state: :started
+        state: :playing
       ))
 
-      game.check_time_entries
-
       if game.save
-        create_empty_board(game)
+        create_empty_board(game, params.board)
       end
 
       game
@@ -20,23 +18,30 @@ module Games
 
     private
 
-    def create_empty_board(game)
-      cells = build_cells(game)
+    def create_empty_board(game, params)
+      params["rows"]  ||= 6
+      params["cols"]  ||= 6
+      params["mines"] ||= 3
+
+      cells = build_cells(params)
 
       Board.create(
-        game:    game,
-        cells:   cells,
-        covered: cells.count
+        game:   game,
+        rows:   params.rows,
+        cols:   params.cols,
+        mines:  params.mines,
+        cells:  cells,
+        hidden: cells.count
       )
     end
 
-    def build_cells(game)
-      game.rows.times.map do |row|
-        game.cols.times.map do |col|
+    def build_cells(params)
+      params.rows.to_i.times.map do |row|
+        params.cols.to_i.times.map do |col|
           Cell.new(
             x:        col,
             y:        row, 
-            state:    :covered,
+            state:    :hidden,
             has_mine: false
           )
         end

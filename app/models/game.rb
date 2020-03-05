@@ -7,29 +7,27 @@ class Game
 
   field :name,  type: String
   field :state, type: Symbol
-  field :rows,  type: Integer
-  field :cols,  type: Integer
-  field :mines, type: Integer
 
   belongs_to :user, index: true
   has_one    :board, dependent: :destroy
 
   embeds_many :time_entries
 
-  validates :name, :user, :state, :rows, :cols, :mines, presence: true
+  validates :name, :user, :state, presence: true
+
+  before_save :set_time_entries
 
   def fsm
     @fsm ||= begin
       fsm = MicroMachine.new(state)
 
-      fsm.when :pause,  :started => :paused
-      fsm.when :resume, :paused  => :started
-      fsm.when :win,    :started => :won
-      fsm.when :lose,   :started => :lost
+      fsm.when :pause,  :playing => :paused
+      fsm.when :resume, :paused  => :playing
+      fsm.when :win,    :playing => :won
+      fsm.when :lose,   :playing => :lost
 
       fsm.on :any do
         self.state = fsm.state
-        check_time_entries
         save!
       end
 
@@ -37,21 +35,21 @@ class Game
     end
   end
 
-  def check_time_entries
+  def playing?
+    state == :playing
+  end
+
+  def duration
+    time_entries.sum &:duration
+  end
+
+  private
+
+  def set_time_entries
     if playing?
       time_entries << TimeEntry.new(start_time: Time.now.utc)
     else
       time_entries.last.finish
     end
-  end
-
-  def playing?
-    state == :started
-  end
-
-  def total_duration
-    time_entries.select do |time_entry|
-      time_entry.start_time && time_entry.end_time
-    end.sum &:duration
   end
 end

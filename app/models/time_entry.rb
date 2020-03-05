@@ -13,4 +13,8 @@ class TimeEntry
     self.end_time = Time.now.utc
     self.duration = (end_time - start_time).round(2)
   end
+
+  def duration
+    super || (Time.now.utc - start_time).round(2)
+  end
 end

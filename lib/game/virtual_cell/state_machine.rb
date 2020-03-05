@@ -5,19 +5,19 @@ module StateMachine
     @fsm ||= begin
       fsm = MicroMachine.new(state)
 
-      fsm.when :uncover,   :covered         => :uncovered
-      fsm.when :user_flag, :covered         => :flagged_by_user
-      fsm.when :game_flag, :covered         => :flagged_by_game
-      fsm.when :unflag,    :flagged_by_user => :covered
+      fsm.when :reveal,    :hidden          => :revealed
+      fsm.when :user_flag, :hidden          => :flagged_by_user
+      fsm.when :game_flag, :hidden          => :flagged_by_game
+      fsm.when :unflag,    :flagged_by_user => :hidden
 
       fsm.on :any do
         self.state = fsm.state
 
-        if state == :covered
-          board.flag_value = nil
-          board.covered += 1
+        if state == :hidden
+          flag_value = nil
+          board.hidden += 1
         else
-          board.covered -= 1 
+          board.hidden -= 1 
         end
 
         self.save and board.save

@@ -9,9 +9,7 @@ class GameSerializer < AppSerializer
       id:           game.id.to_s,
       name:         game.name,
       state:        game.state,
-      mines:        game.mines,
-      rows:         game.rows,
-      cols:         game.cols,
+      duration:     game.duration,
       time_entries: time_entries,
       **board
     }
@@ -21,7 +19,6 @@ class GameSerializer < AppSerializer
 
   def serialize_board(board)
     return {} unless options[:board]
-
     BoardSerializer.new(board).to_h
   end
 

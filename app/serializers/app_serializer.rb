@@ -16,6 +16,10 @@ class AppSerializer
     end
   end
 
+  def to_a
+    object.to_a.map{ |obj| serialize(obj) }
+  end
+
   private
 
   def collection_to_hash

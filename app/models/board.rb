@@ -8,27 +8,26 @@ class Board
 
   def_delegators :virtual_board, :check, :flag, :unflag
 
-  field :mines,   type: Array
-  field :covered, type: Integer
+  field :rows,     type: Integer
+  field :cols,     type: Integer
+  field :mines,    type: Integer
+  field :hidden,   type: Integer
+  field :mine_ids, type: Array
 
   belongs_to  :game, index: true
   embeds_many :cells
 
   index("cells.x": 1, "cells.y": 1)
 
-  def virtual_board
-    @virtual_board ||= VirtualBoard.new(game)
-  end
-
   def win?
-    covered.zero?
+    hidden.zero?
   end
 
   def reset
-    update(mines: nil, covered: cells.count)
+    update(mine_ids: nil, hidden: cells.count)
 
     cells.update_all(
-      state:    :covered,
+      state:    :hidden,
       has_mine: false
     )
 

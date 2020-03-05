@@ -12,7 +12,7 @@ module VirtualCell
     history << self
 
     if mines.zero?
-      fsm.trigger(:uncover)
+      fsm.trigger(:reveal)
       visit_neighbours(history)
     else
       flag(:game_flag, mines)
@@ -25,7 +25,7 @@ module VirtualCell
     neighbours = get_neighbours[0..3].compact
 
     available = neighbours.select do |neighbour|
-      neighbour.covered?
+      neighbour.hidden?
     end
 
     available.each do |neighbour|

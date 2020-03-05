@@ -8,7 +8,7 @@ class BoardController < AppController
   def show
     self.serializer_opts = { board: true }
 
-    json @game
+    json @board
   end
 
   # POST /games/:game_id/board/check
@@ -41,12 +41,12 @@ class BoardController < AppController
   def load_game_and_board!
     query = { id: params.game_id }
 
-    query[:state] = :started unless action == :show
+    query[:state] = :playing unless action == :show
 
     @game = current_user.games.where(query).first
 
     halt 404, error: "Game not found or not started" unless @game
 
-    @board = @game.board
+    @board = @game.board.extend(VirtualBoard)
   end
 end

@@ -11,7 +11,7 @@ class Cell
 
   embedded_in :board
 
-  def covered?
-    state == :covered
+  def hidden?
+    state == :hidden
   end
 end

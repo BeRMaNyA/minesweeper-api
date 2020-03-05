@@ -17,6 +17,8 @@ class GamesController < AppController
   def create
     check_scope! :create_game
 
+    params["board"] ||= {} # set board with default params
+
     game = Games::CreationService.call(current_user, game_params)
 
     self.serializer_opts = { board: true }
@@ -58,6 +60,6 @@ class GamesController < AppController
   end
 
   def game_params
-    params.game.permit(:name, :rows, :cols, :mines)
+    params.permit(:name, :board)
   end
 end
