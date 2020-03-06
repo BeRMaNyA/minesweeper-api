@@ -24,6 +24,7 @@ You can check the [demo here](https://minesweeper-berna.herokuapp.com/)
         * [Board](#board)
         * [Check a Cell](#check-a-cell)
         * [Flag a Cell](#flag-a-cell)
+        * [Unflag a Cell](#unflag-a-cell)
 
 ## Dependencies
 
@@ -87,7 +88,7 @@ Curl request:
 ```bash
 curl $GAMEHOST/users \
 -H "Content-Type: application/json" \
--d '{ "user": { "name": "Joe Doe", "username": "joedoe", "password": "123456" } }'
+-d '{ "name": "Joe Doe", "username": "joedoe", "password": "123456" }'
 ```
 
 #### Response
@@ -160,18 +161,30 @@ curl $GAMEHOST/games \
 {
   "games": [
     {
-      "id": "5e5ea2b248dd4265db8e753e",
-      "name": "Game Test",
-      "state": "started",
-      "mines": 3,
-      "rows": 6,
-      "cols": 6,
+      "id": "5e62299f48dd42413e6d5b21",
+      "name": "Hello World",
+      "state": "playing",
+      "duration": 76.6,
       "time_entries": [
         {
-          "id": "5e5ea2b248dd4265db8e753f",
-          "start_time": "2020-03-03 19:32:18 +0100",
+          "id": "5e62299f48dd42413e6d5b22",
+          "start_time": "2020-03-06 11:44:47 +0100",
           "end_time": null,
-          "duration": null
+          "duration": 76.6
+        }
+      ]
+    },
+    {
+      "id": "5e62298b48dd42413e6d5aba",
+      "name": "Hello World",
+      "state": "playing",
+      "duration": 96.66,
+      "time_entries": [
+        {
+          "id": "5e62298b48dd42413e6d5abb",
+          "start_time": "2020-03-06 11:44:27 +0100",
+          "end_time": null,
+          "duration": 96.66
         }
       ]
     }
@@ -194,9 +207,9 @@ POST /games
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
 | `name` | `string` | **Required**. Game name |
-| `rows` | `integer` | **Required**. Board rows number |
-| `cols` | `integer` | **Required**. Board cols number |
-| `mines` | `integer` | **Required**. Mines |
+| `board[rows]` | `integer` | **Optional**. Board rows number. |
+| `board[cols]` | `integer` | **Optional**. Board cols number |
+| `board[mines]` | `integer` | **Optional**. Number of mines |
 
 Curl request:
 
@@ -204,7 +217,7 @@ Curl request:
 curl $GAMEHOST/games \
 -H "Authorization: Bearer $BEARER" \
 -H "Content-Type: application/json" \
--d '{"game": { "name": "Hello World", "rows": "6", "cols": "6", "mines": "3" } }'
+-d '{ "name": "Hello World", "board": { "rows": "2", "cols": "2", "mines": "1" } }'
 ```
 
 #### Response
@@ -212,33 +225,61 @@ curl $GAMEHOST/games \
 ```javascript
 {
   "game": {
-    "id": "5e5ea3f148dd4265db8e7565",
+    "id": "5e62299f48dd42413e6d5b21",
     "name": "Hello World",
-    "state": "started",
-    "mines": 3,
-    "rows": 6,
-    "cols": 6,
+    "state": "playing",
+    "duration": 0.0,
     "time_entries": [
       {
-        "id": "5e5ea3f148dd4265db8e7566",
-        "start_time": "2020-03-03 19:37:37 +0100",
+        "id": "5e62299f48dd42413e6d5b22",
+        "start_time": "2020-03-06 11:44:47 +0100",
         "end_time": null,
-        "duration": null
+        "duration": 0.0
       }
     ],
     "board": {
-      "mines": null,
-      "uncovered": 36,
+      "mines": 1,
+      "rows": 2,
+      "cols": 2,
+      "hidden": 4,
+      "mine_ids": null,
       "cells": [
-        {
-          "id": "5e5ea3f148dd4265db8e7567",
-          "y": 0,
-          "x": 0,
-          "state": "uncovered",
-          "has_mine": false,
-          "flag_value": null
-        },
-        ...
+        [
+          {
+            "id": "5e62299f48dd42413e6d5b23",
+            "y": 0,
+            "x": 0,
+            "state": "hidden",
+            "has_mine": false,
+            "flag_value": null
+          },
+          {
+            "id": "5e62299f48dd42413e6d5b24",
+            "y": 0,
+            "x": 1,
+            "state": "hidden",
+            "has_mine": false,
+            "flag_value": null
+          }
+        ],
+        [
+          {
+            "id": "5e62299f48dd42413e6d5b25",
+            "y": 1,
+            "x": 0,
+            "state": "hidden",
+            "has_mine": false,
+            "flag_value": null
+          },
+          {
+            "id": "5e62299f48dd42413e6d5b26",
+            "y": 1,
+            "x": 1,
+            "state": "hidden",
+            "has_mine": false,
+            "flag_value": null
+          }
+        ]
       ]
     }
   }
@@ -351,17 +392,23 @@ curl $GAMEHOST/games/$GAMEID/board \
 ```javascript
 {
   "board": {
-    "mines": null,
-    "uncovered": 36,
+    "mines": 1,
+    "rows": 2,
+    "cols": 2,
+    "hidden": 4,
+    "mine_ids": null,
     "cells": [
-      {
-        "id": "5e5ea3f148dd4265db8e7567",
-        "y": 0,
-        "x": 0,
-        "state": "uncovered",
-        "has_mine": false,
-        "flag_value": null
-      },
+      [
+        {
+          "id": "5e62299f48dd42413e6d5b23",
+          "y": 0,
+          "x": 0,
+          "state": "hidden",
+          "has_mine": false,
+          "flag_value": null
+        },
+        ...
+      ]
       ...
     ]
   }
@@ -434,7 +481,37 @@ Returns the affected cells:
 
 ```javascript
 {
-  "cells": [ ... ],
+  "cell": { ... },
   "win": false
+}
+```
+
+### Unflag a Cell
+
+```http
+POST /games/:id/board/unflag
+```
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `x`    | `integer` | **Required**. Cell position |
+| `y`    | `integer` | **Required**. Cell position |
+
+Curl request:
+
+```bash
+curl $GAMEHOST/games/$GAMEID/board/unflag \
+-H "Authorization: Bearer $BEARER" \
+-H "Content-Type: application/json" \
+-d '{"x":"0", "y":"0"}'
+```
+
+#### Response
+
+Returns the affected cells:
+
+```javascript
+{
+  "cell": { ... },
 }
 ```
